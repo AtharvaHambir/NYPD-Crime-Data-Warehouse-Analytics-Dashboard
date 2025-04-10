@@ -1,0 +1,17 @@
+{
+	"name": "NYPD_Snowflake",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "SnowflakeV2",
+		"typeProperties": {
+			"authenticationType": "Basic",
+			"accountIdentifier": "rba01838.east-us-2.azure",
+			"user": "Atharva",
+			"database": "NYPD_DB",
+			"warehouse": "NYPD_WAREHOUSE",
+			"role": "damg7370r",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQEM3MTg0RUMxLTY1QkMtNENBOC04NkFDLTU4NjlFNDdBRTk3NV8xZTY2OGZhOC03NjU1LTQ2OWQtYWJiYS04OTMzMGUwMDQ2MWEiDQp9"
+		}
+	}
+}

@@ -1,0 +1,125 @@
+{
+	"name": "nypd_arrest_data",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "nypd",
+						"type": "DatasetReference"
+					},
+					"name": "nypdarrestdata"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "SnowflakeTable3",
+						"type": "DatasetReference"
+					},
+					"name": "nypdsink"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "derivedColumn2"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          ARREST_KEY as string,",
+				"          ARREST_DATE as string,",
+				"          PD_CD as string,",
+				"          PD_DESC as string,",
+				"          KY_CD as string,",
+				"          OFNS_DESC as string,",
+				"          LAW_CODE as string,",
+				"          LAW_CAT_CD as string,",
+				"          ARREST_BORO as string,",
+				"          ARREST_PRECINCT as string,",
+				"          JURISDICTION_CODE as string,",
+				"          AGE_GROUP as string,",
+				"          PERP_SEX as string,",
+				"          PERP_RACE as string,",
+				"          X_COORD_CD as string,",
+				"          Y_COORD_CD as string,",
+				"          Latitude as string,",
+				"          Longitude as string,",
+				"          {New Georeferenced Column} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> nypdarrestdata",
+				"nypdarrestdata derive(PD_CD = iif(isNull(PD_CD), '-1', PD_CD),",
+				"          KY_CD = iif(isNull(KY_CD), '-1', KY_CD),",
+				"          LAW_CAT_CD = iif(isNull(LAW_CAT_CD) || LAW_CAT_CD == '(null)', 'MISSING', LAW_CAT_CD),",
+				"          PD_DESC = iif(equals(PD_DESC, '(null)'), 'MISSING', PD_DESC),",
+				"          OFNS_DESC = iif(equals(OFNS_DESC, '(null)'), 'MISSING', OFNS_DESC),",
+				"          Latitude = iif(isNull(Latitude), '-1.0',Latitude),",
+				"          Longitude = iif(isNull(Longitude), '-1.0', Longitude),",
+				"          {New Georeferenced Column} = iif(isNull({New Georeferenced Column}), 'MISSING', {New Georeferenced Column}),",
+				"          LAW_CODE = iif(LAW_CODE == '(null)', 'MISSING', LAW_CODE)) ~> derivedColumn1",
+				"derivedColumn1 derive(ARREST_DATE = toString(toDate(ARREST_DATE, 'MM/dd/yyyy'))) ~> derivedColumn2",
+				"derivedColumn2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          ARREST_KEY as string,",
+				"          ARREST_DATE as string,",
+				"          PD_CD as string,",
+				"          PD_DESC as string,",
+				"          KY_CD as string,",
+				"          OFFENSE_DESCRIPTION as string,",
+				"          LAW_CODE as string,",
+				"          LAW_CAT_CD as string,",
+				"          BOROUGH as string,",
+				"          PRECINCT as string,",
+				"          JURISDICTION_CODE as string,",
+				"          AGE_GROUP as string,",
+				"          SEX as string,",
+				"          RACE as string,",
+				"          X_COORD as string,",
+				"          Y_COORD as string,",
+				"          LATITUDE as string,",
+				"          LONGITUDE as string,",
+				"          NEW_GEOREFERENCED_ID as string,",
+				"          DT_JOB_ID as string,",
+				"          DT_JOB_DATE as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     stageInsert: true,",
+				"     mapColumn(",
+				"          ARREST_KEY,",
+				"          ARREST_DATE,",
+				"          PD_CD,",
+				"          PD_DESC,",
+				"          KY_CD,",
+				"          OFFENSE_DESCRIPTION = OFNS_DESC,",
+				"          LAW_CODE,",
+				"          LAW_CAT_CD,",
+				"          BOROUGH = ARREST_BORO,",
+				"          PRECINCT = ARREST_PRECINCT,",
+				"          JURISDICTION_CODE,",
+				"          AGE_GROUP,",
+				"          SEX = PERP_SEX,",
+				"          RACE = PERP_RACE,",
+				"          X_COORD = X_COORD_CD,",
+				"          Y_COORD = Y_COORD_CD,",
+				"          LATITUDE = Latitude,",
+				"          LONGITUDE = Longitude,",
+				"          NEW_GEOREFERENCED_ID = {New Georeferenced Column}",
+				"     )) ~> nypdsink"
+			]
+		}
+	}
+}
