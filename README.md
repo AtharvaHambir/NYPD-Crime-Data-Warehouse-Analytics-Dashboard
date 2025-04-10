@@ -59,8 +59,6 @@ Developed interactive dashboards in **Power BI** to uncover trends and enable in
 ### 📊 Dashboard
 ![Dashboard Preview 4](images/dashboard4.png)
 
-> 📸 *Replace `images/dashboardX.png` with the actual path where you store your images in the repo.*
-
 ---
 
 ## 💼 Business Value Delivered
